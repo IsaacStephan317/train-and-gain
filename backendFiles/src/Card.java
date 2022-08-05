@@ -1,8 +1,8 @@
-public class Cards {
+public class Card {
     private int cardValue;
     private String faceValue;
 
-    public Cards(int cardValue) {
+    public Card(int cardValue) {
         this.cardValue = cardValue;
         if (cardValue > 10) {
             if (cardValue == 11) {
@@ -17,5 +17,13 @@ public class Cards {
         } else {
             faceValue = String.valueOf(cardValue);
         }
+    }
+
+    public int getCardValue() {
+        return cardValue;
+    }
+
+    public String getFaceValue() {
+        return faceValue;
     }
 }
