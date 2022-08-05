@@ -13,7 +13,7 @@ public class EuchreGame {
         Player opponent1 = new Player("opponent1", "opponent2");
         Player opponent2 = new Player("opponent2", "opponent1");
         //may want to change this from a queue to an arraylist
-        Queue<Player> dealerQueue = new LinkedList<>();
+        ArrayList<Player> dealerQueue = new ArrayList<>();
 
         dealerQueue.add(currentUser);
         dealerQueue.add(opponent1);
@@ -36,7 +36,8 @@ public class EuchreGame {
         while(userScore < 10 && opponentScore < 10) {
             //choosing a new dealer
             int roundsWon = 0;
-            dealer = dealerQueue.remove();
+            dealer = dealerQueue.remove(0);
+            System.out.println("\nDealer is: " + dealer.getName());
             deck = euchreDeck.shuffleDeck();
             dealerQueue.add(dealer);
             Card[] kitty = new Card[4];
@@ -44,11 +45,9 @@ public class EuchreGame {
             boolean picked = false;
             String trumpSuit = "error";
 
-            System.out.println("\nDealer is: " + dealer.getName());
-
             //section to deal cards
             for (int currentIndex = 0; currentIndex < 20; currentIndex++) {
-                Player currentReciever = dealerQueue.remove();
+                Player currentReciever = dealerQueue.remove(0);
                 currentReciever.addToHand(deck[currentIndex]);
                 dealerQueue.add(currentReciever);
             }
@@ -58,7 +57,7 @@ public class EuchreGame {
 
 
             //section to print a user's hand
-            /*
+
             System.out.println("\nUser's hand:");
             for (Card currentCard : currentUser.getHand()) {
                 System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
@@ -77,12 +76,12 @@ public class EuchreGame {
                 System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
             }
 
-             */
+
             System.out.println("\nTop card is: " + kitty[0].getFaceValue() + " of " + kitty[0].getSuit());
 
             topCard = kitty[0];
             for (int currentIndex = 0; currentIndex < 4; currentIndex++) {
-                Player currentReciever = dealerQueue.remove();
+                Player currentReciever = dealerQueue.remove(0);
                 String decision = currentReciever.pickOrPass(topCard, dealer);
                 dealerQueue.add(currentReciever);
                 if (decision.equals("Pick")) {
@@ -90,19 +89,27 @@ public class EuchreGame {
                     System.out.println("pick up: " + currentReciever.getName());
                     picked = true;
                     trumpSuit = topCard.getSuit();
+                    for (int index = currentIndex+1; index < 4; index++) {
+                        currentReciever = dealerQueue.remove(0);
+                        dealerQueue.add(currentReciever);
+                    }
+                    break;
                 }
             }
 
             if (picked == false) {
                 String pickSuit = null;
                 for (int currentIndex = 0; currentIndex < 4; currentIndex++) {
-                    Player currentReciever = dealerQueue.remove();
+                    Player currentReciever = dealerQueue.remove(0);
                     pickSuit = currentReciever.suitOrPass(dealer);
                     dealerQueue.add(currentReciever);
                     if (pickSuit != null && !pickSuit.equals("Pass")) {
                         System.out.println("chose trump: " + currentReciever.getName());
                         trumpSuit = pickSuit;
-
+                        for (int index = currentIndex+1; index < 4; index++) {
+                            currentReciever = dealerQueue.remove(0);
+                            dealerQueue.add(currentReciever);
+                        }
                         break;
                     }
                 }
@@ -121,6 +128,7 @@ public class EuchreGame {
                 opponent2.removeFromHand(0);
             }
             //temporary break while score is not working
+
             userScore+=2;
         }
         if (userScore >= 10) {
