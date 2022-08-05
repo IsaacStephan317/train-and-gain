@@ -38,6 +38,9 @@ public class EuchreGame {
             deck = euchreDeck.shuffleDeck();
             dealerQueue.add(dealer);
             Card[] kitty = new Card[4];
+            Card topCard;
+            boolean picked = false;
+            String trumpSuit = "error";
 
             //section to deal cards
             for (int currentIndex = 0; currentIndex < 20; currentIndex++) {
@@ -70,14 +73,42 @@ public class EuchreGame {
             }
             System.out.println("\nTop card is: " + kitty[0].getFaceValue() + " of " + kitty[0].getSuit());
 
+            topCard = kitty[0];
+            for (int currentIndex = 0; currentIndex < 4; currentIndex++) {
+                Player currentReciever = dealerQueue.remove();
+                String decision = currentReciever.pickOrPass(topCard, dealer);
+                dealerQueue.add(currentReciever);
+                if (decision.equals("Pick")) {
+                    //code for dealer to swap if computer or have player choose which card to drop
+                    System.out.println("pick up: " + currentReciever.getName());
+                    picked = true;
+                    trumpSuit = topCard.getSuit();
+                }
+            }
+
+            if (picked == false) {
+                String pickSuit = null;
+                for (int currentIndex = 0; currentIndex < 4; currentIndex++) {
+                    Player currentReciever = dealerQueue.remove();
+                    pickSuit = currentReciever.suitOrPass(dealer);
+                    dealerQueue.add(currentReciever);
+                    if (pickSuit != null && !pickSuit.equals("Pass")) {
+                        System.out.println("chose trump: " + currentReciever.getName());
+                        trumpSuit = pickSuit;
+
+                        break;
+                    }
+                }
+            }
+            System.out.println("trump suit is "+ trumpSuit);
             //temporary break while score is not working
             break;
         }
         if (userScore >= 10) {
-            System.out.println("Congrats you have won this game of Euchre!");
+            System.out.println("\nCongrats you have won this game of Euchre!");
         } else if (opponentScore >= 10) {
-            System.out.println("Your opponent's won, better luck next time");
+            System.out.println("\nYour opponent's won, better luck next time");
         }
-        System.out.println("Final Score: \nUser Team " + userScore + "\nOpponentScore " + opponentScore);
+        System.out.println("\nFinal Score: \nUser Team " + userScore + "\nOpponentScore " + opponentScore);
     }
 }
