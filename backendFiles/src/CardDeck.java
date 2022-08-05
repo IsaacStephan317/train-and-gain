@@ -9,7 +9,7 @@ public class CardDeck {
 
         for (int currValue = 2; currValue <= 14; currValue++) {
             for (int numbCardsAdded = 1; numbCardsAdded <= 4; numbCardsAdded++) {
-                deck[deckIndex] = new Card(currValue);
+                deck[deckIndex] = new Card(currValue, numbCardsAdded);
                 deckIndex++;
             }
         }
@@ -22,7 +22,7 @@ public class CardDeck {
 
             for (int currValue = 9; currValue <= 14; currValue++) {
                 for (int numbCardsAdded = 1; numbCardsAdded <= 4; numbCardsAdded++) {
-                    deck[deckIndex] = new Card(currValue);
+                    deck[deckIndex] = new Card(currValue, numbCardsAdded);
                     deckIndex++;
                 }
             }

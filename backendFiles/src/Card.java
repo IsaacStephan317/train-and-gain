@@ -1,9 +1,24 @@
 public class Card {
     private int cardValue;
     private String faceValue;
+    private String suit;
 
-    public Card(int cardValue) {
+    public Card(int cardValue, int suit) {
         this.cardValue = cardValue;
+        switch(suit) {
+            case 1:
+                this.suit = "Clubs";
+                break;
+            case 2:
+                this.suit = "Diamonds";
+                break;
+            case 3:
+                this.suit = "Hearts";
+                break;
+            case 4:
+                this.suit = "Spades";
+                break;
+        }
         if (cardValue > 10) {
             if (cardValue == 11) {
                 faceValue = "Jack";
@@ -25,5 +40,9 @@ public class Card {
 
     public String getFaceValue() {
         return faceValue;
+    }
+
+    public String getSuit() {
+        return suit;
     }
 }
