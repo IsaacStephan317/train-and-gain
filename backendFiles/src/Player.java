@@ -41,6 +41,16 @@ public class Player {
         hand.add(requestedCard);
     }
 
+    private void adjustDecisionScore(int[] suits, int[] totalCardValue, int[] avgCardValue, Card currCard, int index) {
+        suits[index]++;
+        if (currCard.getCardValue() == 11) {
+            totalCardValue[index] += 15;
+        } else {
+            totalCardValue[index] += currCard.getCardValue();
+        }
+        avgCardValue[index] = totalCardValue[index]/suits[index];
+    }
+
     public String pickOrPass(Card topCard, Player dealer) {
         String topSuit = topCard.getSuit();
         Boolean dealingTeam;
@@ -58,41 +68,13 @@ public class Player {
 
         for (Card currCard: hand) {
             if (currCard.getSuit().equals("Clubs")) {
-                suits[0]++;
-                if (currCard.getCardValue() == 11) {
-                    totalCardValue[0] += 15;
-                } else {
-                    totalCardValue[0] += currCard.getCardValue();
-                }
-                avgCardValue[0] = totalCardValue[0]/suits[0];
-
+                adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 0);
             } else if (currCard.getSuit().equals("Diamonds")) {
-                suits[1]++;
-                if (currCard.getCardValue() == 11) {
-                    totalCardValue[1] += 15;
-                } else {
-                    totalCardValue[1] += currCard.getCardValue();
-                }
-                avgCardValue[1] = totalCardValue[1]/suits[1];
-
+                adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 1);
             } else if (currCard.getSuit().equals("Hearts")) {
-                suits[2]++;
-                if (currCard.getCardValue() == 11) {
-                    totalCardValue[2] += 15;
-                } else {
-                    totalCardValue[2] += currCard.getCardValue();
-                }
-                avgCardValue[2] = totalCardValue[1]/suits[2];
-
+                adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 2);
             } else if (currCard.getSuit().equals("Spades")) {
-                suits[3]++;
-                if (currCard.getCardValue() == 11) {
-                    totalCardValue[3] += 15;
-                } else {
-                    totalCardValue[3] += currCard.getCardValue();
-                }
-                avgCardValue[3] = totalCardValue[3]/suits[3];
-
+                adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 3);
             }
         }
         int trumpIndex = 0;
@@ -109,6 +91,8 @@ public class Player {
             decisionScore = avgCardValue[3] + 1;
             trumpIndex = 3;
         }
+        suits[trumpIndex]++;
+
         if (topCard.getCardValue() == 11 || topCard.getCardValue() == 13 || topCard.getCardValue() == 14) {
             if (dealingTeam) {
                 decisionScore++;
@@ -149,37 +133,13 @@ public class Player {
         int[] avgCardValue = new int[4];
         for (Card currCard: hand) {
             if (currCard.getSuit().equals("Clubs")) {
-                suits[0]++;
-                if (currCard.getCardValue() == 11) {
-                    totalCardValue[0] += 15;
-                } else {
-                    totalCardValue[0] += currCard.getCardValue();
-                }
-                avgCardValue[0] = totalCardValue[0]/suits[0];
+                adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 0);
             } else if (currCard.getSuit().equals("Diamonds")) {
-                suits[1]++;
-                if (currCard.getCardValue() == 11) {
-                    totalCardValue[1] += 15;
-                } else {
-                    totalCardValue[1] += currCard.getCardValue();
-                }
-                avgCardValue[1] = totalCardValue[1]/suits[1];
+                adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 1);
             } else if (currCard.getSuit().equals("Hearts")) {
-                suits[2]++;
-                if (currCard.getCardValue() == 11) {
-                    totalCardValue[2] += 15;
-                } else {
-                    totalCardValue[2] += currCard.getCardValue();
-                }
-                avgCardValue[2] = totalCardValue[2]/suits[2];
+                adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 2);
             } else if (currCard.getSuit().equals("Spades")) {
-                suits[3]++;
-                if (currCard.getCardValue() == 11) {
-                    totalCardValue[3] += 15;
-                } else {
-                    totalCardValue[3] += currCard.getCardValue();
-                }
-                avgCardValue[3] = totalCardValue[3]/suits[3];
+                adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 3);
             }
         }
 

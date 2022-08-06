@@ -35,7 +35,8 @@ public class EuchreGame {
 
         while(userScore < 10 && opponentScore < 10) {
             //choosing a new dealer
-            int roundsWon = 0;
+            int userRoundsWon = 0;
+            int oppRoundsWon = 0;
             dealer = dealerQueue.remove(0);
             System.out.println("\nDealer is: " + dealer.getName());
             deck = euchreDeck.shuffleDeck();
