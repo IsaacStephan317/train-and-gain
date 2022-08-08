@@ -101,7 +101,7 @@ public class Player {
             }
         }
 
-        if (decisionScore >= 10.5 && suits[trumpIndex] >= 3) {
+        if (decisionScore >= 12 && suits[trumpIndex] >= 3) {
             return "Pick";
         } else {
             return "Pass";
@@ -184,5 +184,64 @@ public class Player {
             }
         }
 
+    }
+
+    public Card chooseCardToPlay(Card[] cardsPlayed, String trumpSuit, int numbPlayed) {
+        int playedCardIndex = 0;
+        int bestCardIndex = 0;
+        int worstCardIndex = 0;
+        int count = 0;
+        int[] handScores = new int[5];
+        if (numbPlayed == 0) {
+            for (Card currCard: hand) {
+                if (currCard.getSuit().equals(trumpSuit)) {
+                    handScores[count] += currCard.getCardValue();
+                } else {
+                    handScores[count] += 4 + currCard.getCardValue();
+                }
+                if (handScores[count] > handScores[bestCardIndex]) {
+                    bestCardIndex = count;
+                }
+                count++;
+            }
+            playedCardIndex = bestCardIndex;
+        } else {
+            int[] playedCardsValue = new int[4];
+            int leadCard = 0;
+            for (Card playedCard: cardsPlayed) {
+                if (playedCard == null) {
+                    break;
+                }
+                if (playedCard.getSuit().equals(trumpSuit)) {
+                    playedCardsValue[count] += 15 + playedCard.getCardValue();
+                } else {
+                    playedCardsValue[count] += playedCard.getCardValue();
+                }
+                if (playedCardsValue[count] > playedCardsValue[leadCard]) {
+                    leadCard = count;
+                }
+            }
+
+            count = 0;
+            for (Card currCard: hand) { //still need to add in logic for the right and the left (jacks that are trump)
+                if (currCard.getSuit().equals(trumpSuit)) {
+                    handScores[count] += 15 + currCard.getCardValue();
+                } else {
+                    handScores[count] += currCard.getCardValue();
+                }
+                if (handScores[count] > handScores[bestCardIndex]) {
+                    bestCardIndex = count;
+                } else if(handScores[count] < handScores[bestCardIndex]) {
+                    worstCardIndex = count;
+                }
+            }
+            if (handScores[bestCardIndex] <= playedCardsValue[leadCard]) {
+                playedCardIndex = worstCardIndex;
+            } else {
+                playedCardIndex = bestCardIndex;
+            }
+        }
+
+        return removeFromHand(playedCardIndex);
     }
 }

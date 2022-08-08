@@ -106,37 +106,27 @@ public class EuchreGame {
                 }
             }
             System.out.println("trump suit is "+ trumpSuit);
-            System.out.println("\nUser's hand:");
-            for (Card currentCard : currentUser.getHand()) {
-                System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
-            }
-            System.out.println("\nopp1's hand:");
-            for (Card currentCard : opponent1.getHand()) {
-                System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
-            }
-
-            System.out.println("\npartner's hand:");
-            for (Card currentCard : userPartner.getHand()) {
-                System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
-            }
-            System.out.println("\nopp2's hand:");
-            for (Card currentCard : opponent2.getHand()) {
-                System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
-            }
+            Player currentPlayer = dealerQueue.remove(0);
+            dealerQueue.add(currentPlayer);
 
             //start of actually playing the game, 5 rounds for each deal
             for (int roundNumber = 0; roundNumber < 5; roundNumber++) {
+                String suitLed = "empty";
+                int turnIndex = 0;
+                Card[] cardsPlayed = new Card[4];
 
-
-                //ignore
-                //temporary code to regulate cards in a user's hand
-                currentUser.removeFromHand(0);
-                opponent1.removeFromHand(0);
-                userPartner.removeFromHand(0);
-                opponent2.removeFromHand(0);
+                //code to run through queue and have each player play a card
+                for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
+                    currentPlayer = dealerQueue.remove(0);
+                    cardsPlayed[turnIndex] = currentPlayer.chooseCardToPlay(cardsPlayed, trumpSuit, playerIndex);
+                    dealerQueue.add(currentPlayer);
+                }
             }
+            //still need to track user and opponent score, let user make interactive choices, and move to whoever
+            // won the hand so that they can go first on the next round (maybe just add them at front of arraylist once
+            // you have looped through and found them)
 
-            userScore+=10;
+            userScore+=3;
         }
         if (userScore >= 10) {
             System.out.println("\nCongrats you have won this game of Euchre!");
