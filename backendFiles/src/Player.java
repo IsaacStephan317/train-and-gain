@@ -101,7 +101,7 @@ public class Player {
             }
         }
 
-        if (decisionScore >= 12.5 && suits[trumpIndex] >= 3) {
+        if (decisionScore >= 10.5 && suits[trumpIndex] >= 3) {
             return "Pick";
         } else {
             return "Pass";
@@ -121,6 +121,26 @@ public class Player {
         } else {
             return "error";
         }
+    }
+
+    //still need to factor in the jack that doesn't have the same suit as trump but counts as trump
+    public void pickUpCard (Card topCard, String trumpSuit) {
+        int[] handScores = new int[5];
+        int count = 0;
+        int currentWorst = 0;
+        for (Card currCard: hand) {
+            if (currCard.getSuit().equals(trumpSuit)) {
+                handScores[count] += 15 + currCard.getCardValue();
+            } else {
+                handScores[count] += currCard.getCardValue();
+            }
+            if (handScores[count] < handScores[currentWorst]) {
+                currentWorst = count;
+            }
+            count++;
+        }
+        hand.remove(currentWorst);
+        hand.add(topCard);
     }
 
     public String suitOrPass(Player dealer) {

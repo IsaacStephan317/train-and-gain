@@ -19,22 +19,10 @@ public class EuchreGame {
         dealerQueue.add(opponent1);
         dealerQueue.add(userPartner);
         dealerQueue.add(opponent2);
-        //test to check card values
-        /*
-        for (Card card: deck) {
-            System.out.print(card.getFaceValue() + " ");
-            System.out.println(card.getSuit());
-        }
-
-
-        System.out.println();
-
-        currentUser.addToHand(deck[0]);
-        currentUser.addToHand(deck[1]);
-        */
 
         while(userScore < 10 && opponentScore < 10) {
             //choosing a new dealer
+
             int userRoundsWon = 0;
             int oppRoundsWon = 0;
             dealer = dealerQueue.remove(0);
@@ -90,6 +78,8 @@ public class EuchreGame {
                     System.out.println("pick up: " + currentReciever.getName());
                     picked = true;
                     trumpSuit = topCard.getSuit();
+                    dealer.pickUpCard(topCard, trumpSuit);
+
                     for (int index = currentIndex+1; index < 4; index++) {
                         currentReciever = dealerQueue.remove(0);
                         dealerQueue.add(currentReciever);
@@ -116,6 +106,23 @@ public class EuchreGame {
                 }
             }
             System.out.println("trump suit is "+ trumpSuit);
+            System.out.println("\nUser's hand:");
+            for (Card currentCard : currentUser.getHand()) {
+                System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
+            }
+            System.out.println("\nopp1's hand:");
+            for (Card currentCard : opponent1.getHand()) {
+                System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
+            }
+
+            System.out.println("\npartner's hand:");
+            for (Card currentCard : userPartner.getHand()) {
+                System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
+            }
+            System.out.println("\nopp2's hand:");
+            for (Card currentCard : opponent2.getHand()) {
+                System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
+            }
 
             //start of actually playing the game, 5 rounds for each deal
             for (int roundNumber = 0; roundNumber < 5; roundNumber++) {
@@ -128,9 +135,8 @@ public class EuchreGame {
                 userPartner.removeFromHand(0);
                 opponent2.removeFromHand(0);
             }
-            //temporary break while score is not working
 
-            userScore+=2;
+            userScore+=10;
         }
         if (userScore >= 10) {
             System.out.println("\nCongrats you have won this game of Euchre!");
