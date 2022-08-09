@@ -6,6 +6,10 @@ public class EuchreGame {
     public static int opponentScore = 0;
     public static Player dealer;
 
+    public static int getRoundWinner (String trumpSuit, Card[] playedCards) {
+        return 0;
+    }
+
     public static void main(String[] args) {
         Card[] deck = euchreDeck.getDeck();
         Player currentUser = new Player("user", "userPartner");
@@ -26,13 +30,17 @@ public class EuchreGame {
             int userRoundsWon = 0;
             int oppRoundsWon = 0;
             dealer = dealerQueue.remove(0);
+            Player firstDealer = dealer;
             System.out.println("\nDealer is: " + dealer.getName());
             deck = euchreDeck.shuffleDeck();
             dealerQueue.add(dealer);
             Card[] kitty = new Card[4];
             Card topCard;
+            Player trumpChooser = null;
             boolean picked = false;
             String trumpSuit = "error";
+            int userRoundScore = 0;
+            int oppRoundScore = 0;
 
             //section to deal cards
             for (int currentIndex = 0; currentIndex < 20; currentIndex++) {
@@ -76,6 +84,7 @@ public class EuchreGame {
                 if (decision.equals("Pick")) {
                     //code for dealer to swap if computer or have player choose which card to drop
                     System.out.println("pick up: " + currentReciever.getName());
+                    trumpChooser = currentReciever;
                     picked = true;
                     trumpSuit = topCard.getSuit();
                     dealer.pickUpCard(topCard, trumpSuit);
@@ -96,6 +105,7 @@ public class EuchreGame {
                     dealerQueue.add(currentReciever);
                     if (pickSuit != null && !pickSuit.equals("Pass")) {
                         System.out.println("chose trump: " + currentReciever.getName());
+                        trumpChooser = currentReciever;
                         trumpSuit = pickSuit;
                         for (int index = currentIndex+1; index < 4; index++) {
                             currentReciever = dealerQueue.remove(0);
@@ -121,12 +131,36 @@ public class EuchreGame {
                     cardsPlayed[turnIndex] = currentPlayer.chooseCardToPlay(cardsPlayed, trumpSuit, playerIndex);
                     dealerQueue.add(currentPlayer);
                 }
+                int winnerIndex = getRoundWinner(trumpSuit, cardsPlayed);
+
+                for (int playerIndex = 0; playerIndex <= winnerIndex; playerIndex++) {
+                    currentPlayer = dealerQueue.remove(playerIndex);
+                    dealerQueue.add(currentPlayer);
+                }
+                if (currentPlayer.getName().equals("user") || currentPlayer.getName().equals("userPartner")) {
+                    userRoundScore++;
+                }
+                if (currentPlayer.getName().equals("opponent1") || currentPlayer.getName().equals("opponent2")) {
+                    oppRoundScore++;
+                }
             }
             //still need to track user and opponent score, let user make interactive choices, and move to whoever
             // won the hand so that they can go first on the next round (maybe just add them at front of arraylist once
             // you have looped through and found them)
+            if (userRoundScore > oppRoundScore) {
+                if (trumpChooser.getName().equals("user") || trumpChooser.getName().equals("userPartner")) {
+                    userScore++;
+                } else {
+                    userScore+=2;
+                }
+            } else {
+                if (trumpChooser.getName().equals("opponent1") || trumpChooser.getName().equals("opponent2")) {
+                    opponentScore++;
+                } else {
+                    opponentScore+=2;
+                }
+            }
 
-            userScore+=3;
         }
         if (userScore >= 10) {
             System.out.println("\nCongrats you have won this game of Euchre!");
