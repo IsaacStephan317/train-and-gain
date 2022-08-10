@@ -10,10 +10,8 @@ public class EuchreGame {
         int maxScore = 0;
         int maxIndex = 0;
 
-
-        System.out.println("\nStart of new round:");
         for (int cardIndex = 0; cardIndex < 4; cardIndex++) {
-            System.out.println(playedCards[cardIndex].getFaceValue() + "of" + playedCards[cardIndex].getSuit());
+            //System.out.println(playedCards[cardIndex].getFaceValue() + "of" + playedCards[cardIndex].getSuit());
             int currentScore = 0;
             if (playedCards[cardIndex].getSuit().equals(trumpSuit)) {
                 currentScore += 16;
@@ -31,9 +29,7 @@ public class EuchreGame {
             }
         }
 
-        //dealer order is only preserved if this method returns zero, need to look into usage around this method
-        //return maxIndex;
-        return 0;
+        return maxIndex;
     }
 
     public static void main(String[] args) {
@@ -115,7 +111,7 @@ public class EuchreGame {
                     trumpSuit = topCard.getSuit();
                     dealer.pickUpCard(topCard, trumpSuit);
 
-                    for (int index = currentIndex+1; index < 4; index++) {
+                    while (!currentReciever.getName().equals(firstDealer.getName())) {
                         currentReciever = dealerQueue.remove(0);
                         dealerQueue.add(currentReciever);
                     }
@@ -133,7 +129,7 @@ public class EuchreGame {
                         System.out.println("chose trump: " + currentReciever.getName());
                         trumpChooser = currentReciever;
                         trumpSuit = pickSuit;
-                        for (int index = currentIndex+1; index < 4; index++) {
+                        while (!currentReciever.getName().equals(firstDealer.getName())) {
                             currentReciever = dealerQueue.remove(0);
                             dealerQueue.add(currentReciever);
                         }
@@ -142,8 +138,7 @@ public class EuchreGame {
                 }
             }
             System.out.println("trump suit is "+ trumpSuit);
-            Player currentPlayer = dealerQueue.remove(0);
-            dealerQueue.add(currentPlayer);
+            Player currentPlayer = null;
 
             //start of actually playing the game, 5 rounds for each deal
             for (int roundNumber = 0; roundNumber < 5; roundNumber++) {
@@ -154,26 +149,29 @@ public class EuchreGame {
                 //code to run through queue and have each player play a card
                 for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
                     currentPlayer = dealerQueue.remove(0);
-                    //System.out.println(currentPlayer.getName());
                     cardsPlayed[playerIndex] = currentPlayer.chooseCardToPlay(cardsPlayed, trumpSuit, playerIndex);
+                    System.out.println(playerIndex + " " + currentPlayer.getName() + " played " + cardsPlayed[playerIndex].getFaceValue() + " of " + cardsPlayed[playerIndex].getSuit());
                     dealerQueue.add(currentPlayer);
                 }
                 int winnerIndex = getRoundWinner(trumpSuit, cardsPlayed);
+                System.out.println(winnerIndex);
 
                 for (int playerIndex = 0; playerIndex <= winnerIndex; playerIndex++) {
-                    currentPlayer = dealerQueue.remove(playerIndex);
+                    currentPlayer = dealerQueue.remove(0);
                     dealerQueue.add(currentPlayer);
                 }
                 if (currentPlayer.getName().equals("user") || currentPlayer.getName().equals("userPartner")) {
                     userRoundScore++;
-                    System.out.println("user point");
+                    System.out.println("user point\n");
                 }
                 if (currentPlayer.getName().equals("opponent1") || currentPlayer.getName().equals("opponent2")) {
                     oppRoundScore++;
-                    System.out.println("opp point");
+                    System.out.println("opp point\n");
                 }
+                currentPlayer = dealerQueue.remove(dealerQueue.size()-1);
+                dealerQueue.add(0, currentPlayer);
             }
-            //before changing who leads a round, this works to get the right dealer
+            //now gets the correct dealer and the correct winner of the round according to current logic
             while (!currentPlayer.getName().equals(firstDealer.getName())) {
                 currentPlayer = dealerQueue.remove(0);
                 dealerQueue.add(currentPlayer);
