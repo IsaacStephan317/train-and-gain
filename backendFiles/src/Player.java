@@ -190,8 +190,10 @@ public class Player {
         int playedCardIndex = 0;
         int bestCardIndex = 0;
         int worstCardIndex = 0;
+        int followSuitIndex = 0;
         int count = 0;
         int[] handScores = new int[5];
+        String leadSuit = "empty";
 
         //need to add in logic to follow suit and include other jack as a trump
         if (numbPlayed == 0) {
@@ -210,6 +212,9 @@ public class Player {
         } else {
             int[] playedCardsValue = new int[4];
             int leadCard = 0;
+            leadSuit = cardsPlayed[0].getSuit();
+            boolean leadSuitFound = false;
+
             for (Card playedCard: cardsPlayed) {
                 if (playedCard == null) {
                     break;
@@ -226,21 +231,26 @@ public class Player {
 
             count = 0;
             for (Card currCard: hand) { //still need to add in logic for the right and the left (jacks that are trump)
+                if (currCard.getSuit().equals(leadSuit)) {
+                    handScores[count] += 100;
+                    leadSuitFound = true;
+                }
                 if (currCard.getSuit().equals(trumpSuit)) {
                     handScores[count] += 15 + currCard.getCardValue();
                 } else {
                     handScores[count] += currCard.getCardValue();
                 }
+
                 if (handScores[count] > handScores[bestCardIndex]) {
                     bestCardIndex = count;
                 } else if(handScores[count] < handScores[bestCardIndex]) {
                     worstCardIndex = count;
                 }
             }
-            if (handScores[bestCardIndex] <= playedCardsValue[leadCard]) {
-                playedCardIndex = worstCardIndex;
-            } else {
+            if (leadSuitFound == true || handScores[bestCardIndex] > playedCardsValue[leadCard]) {
                 playedCardIndex = bestCardIndex;
+            } else {
+                playedCardIndex = worstCardIndex;
             }
         }
 

@@ -177,9 +177,7 @@ public class EuchreGame {
                 dealerQueue.add(currentPlayer);
             }
 
-            //still need to track user and opponent score, let user make interactive choices, and move to whoever
-            // won the hand so that they can go first on the next round (maybe just add them at front of arraylist once
-            // you have looped through and found them)
+            //still need to let user make interactive choices
             if (userRoundScore > oppRoundScore) {
                 if (trumpChooser.getName().equals("user") || trumpChooser.getName().equals("userPartner")) {
                     userScore++;
