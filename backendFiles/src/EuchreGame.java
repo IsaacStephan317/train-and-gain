@@ -6,7 +6,21 @@ public class EuchreGame {
     public static int opponentScore = 0;
     public static Player dealer;
 
-    public static int getRoundWinner (String trumpSuit, Card[] playedCards) {
+    private static boolean getJackPair(String trumpSuit, Card possibleJack) {
+        if (trumpSuit.equals("Clubs") || possibleJack.getSuit().equals("Spades")) {
+            return true;
+        } else if (trumpSuit.equals("Spades") || possibleJack.getSuit().equals("Clubs")) {
+            return true;
+        } else if (trumpSuit.equals("Hearts") || possibleJack.getSuit().equals("Diamonds")) {
+            return true;
+        } else if (trumpSuit.equals("Diamonds") || possibleJack.getSuit().equals("Hearts")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static int getRoundWinner (String trumpSuit, Card[] playedCards) {
         int maxScore = 0;
         int maxIndex = 0;
 
@@ -20,6 +34,8 @@ public class EuchreGame {
                 } else {
                     currentScore += playedCards[cardIndex].getCardValue();
                 }
+            } else if (playedCards[cardIndex].getFaceValue().equals("Jack") && getJackPair(trumpSuit, playedCards[cardIndex])) { //check to see if card is a jack of the same color
+                currentScore += 31; //technically a trump (+16) and a jack pair (+15)
             } else {
                 currentScore += playedCards[cardIndex].getCardValue();
             }
@@ -171,13 +187,15 @@ public class EuchreGame {
                 currentPlayer = dealerQueue.remove(dealerQueue.size()-1);
                 dealerQueue.add(0, currentPlayer);
             }
-            //now gets the correct dealer and the correct winner of the round according to current logic
+
+            //rotates the queue so that the correct dealer is in place
             while (!currentPlayer.getName().equals(firstDealer.getName())) {
                 currentPlayer = dealerQueue.remove(0);
                 dealerQueue.add(currentPlayer);
             }
 
             //still need to let user make interactive choices
+            //tracks overall score for each player pair
             if (userRoundScore > oppRoundScore) {
                 if (trumpChooser.getName().equals("user") || trumpChooser.getName().equals("userPartner")) {
                     userScore++;
