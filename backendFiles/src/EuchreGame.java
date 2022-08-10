@@ -144,6 +144,12 @@ public class EuchreGame {
                     oppRoundScore++;
                 }
             }
+            //before changing who leads a round, this works to get the right dealer
+            while (!currentPlayer.getName().equals(firstDealer.getName())) {
+                currentPlayer = dealerQueue.remove(0);
+                dealerQueue.add(currentPlayer);
+            }
+
             //still need to track user and opponent score, let user make interactive choices, and move to whoever
             // won the hand so that they can go first on the next round (maybe just add them at front of arraylist once
             // you have looped through and found them)
