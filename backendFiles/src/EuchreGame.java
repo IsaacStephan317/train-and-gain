@@ -7,6 +7,32 @@ public class EuchreGame {
     public static Player dealer;
 
     public static int getRoundWinner (String trumpSuit, Card[] playedCards) {
+        int maxScore = 0;
+        int maxIndex = 0;
+
+
+        System.out.println("\nStart of new round:");
+        for (int cardIndex = 0; cardIndex < 4; cardIndex++) {
+            System.out.println(playedCards[cardIndex].getFaceValue() + "of" + playedCards[cardIndex].getSuit());
+            int currentScore = 0;
+            if (playedCards[cardIndex].getSuit().equals(trumpSuit)) {
+                currentScore += 16;
+                if (playedCards[cardIndex].getSuit().equals("Jack")) {
+                    currentScore += 16;
+                } else {
+                    currentScore += playedCards[cardIndex].getCardValue();
+                }
+            } else {
+                currentScore += playedCards[cardIndex].getCardValue();
+            }
+            if (currentScore >maxScore) {
+                maxIndex = cardIndex;
+                maxScore = currentScore;
+            }
+        }
+
+        //dealer order is only preserved if this method returns zero, need to look into usage around this method
+        //return maxIndex;
         return 0;
     }
 
@@ -128,7 +154,8 @@ public class EuchreGame {
                 //code to run through queue and have each player play a card
                 for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
                     currentPlayer = dealerQueue.remove(0);
-                    cardsPlayed[turnIndex] = currentPlayer.chooseCardToPlay(cardsPlayed, trumpSuit, playerIndex);
+                    //System.out.println(currentPlayer.getName());
+                    cardsPlayed[playerIndex] = currentPlayer.chooseCardToPlay(cardsPlayed, trumpSuit, playerIndex);
                     dealerQueue.add(currentPlayer);
                 }
                 int winnerIndex = getRoundWinner(trumpSuit, cardsPlayed);
@@ -139,9 +166,11 @@ public class EuchreGame {
                 }
                 if (currentPlayer.getName().equals("user") || currentPlayer.getName().equals("userPartner")) {
                     userRoundScore++;
+                    System.out.println("user point");
                 }
                 if (currentPlayer.getName().equals("opponent1") || currentPlayer.getName().equals("opponent2")) {
                     oppRoundScore++;
+                    System.out.println("opp point");
                 }
             }
             //before changing who leads a round, this works to get the right dealer

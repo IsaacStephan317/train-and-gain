@@ -192,6 +192,8 @@ public class Player {
         int worstCardIndex = 0;
         int count = 0;
         int[] handScores = new int[5];
+
+        //need to add in logic to follow suit and include other jack as a trump
         if (numbPlayed == 0) {
             for (Card currCard: hand) {
                 if (currCard.getSuit().equals(trumpSuit)) {
