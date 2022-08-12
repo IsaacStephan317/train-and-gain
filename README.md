@@ -1,8 +1,8 @@
 # train-and-gain
 Have you ever wanted to learn the game of Euchre or improve your Euchre skills, but just 
-couldn't get enough time playing at parties or with friends? Train and gain is an application that seeks
+couldn't get enough time playing at parties or with friends? train-and-gain is an application that seeks
 to fill that gap, allowing users to practice for as much or as little time as they'd like.
-Whether you're learning the game for the first time, or trying out new strategies Train and gain is the app for you.
+Whether you're learning the game for the first time, or trying out new strategies train-and-gain is the app for you.
 
 ## Accessing the train-and-gain application
 Users will need to clone this git repository to play the game, with steps for cloning, included below:
