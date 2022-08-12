@@ -1,5 +1,7 @@
 import java.util.*;
 
+import static java.lang.Thread.sleep;
+
 public class EuchreGame {
     public static CardDeck euchreDeck = new CardDeck("euchre");
     public static int userScore = 0;
@@ -52,7 +54,7 @@ public class EuchreGame {
         return maxIndex;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Card[] deck = euchreDeck.getDeck();
         Player currentUser = new Player("user", "userPartner");
         Player userPartner = new Player("userPartner", "user");
@@ -67,7 +69,7 @@ public class EuchreGame {
         dealerQueue.add(opponent2);
 
         Scanner userScanner = new Scanner(System.in);  // User Scanner
-        System.out.println("Welcome to Train and Gain, a euchre training software!");
+        System.out.println("\nWelcome to Train and Gain, a euchre training software!");
         System.out.println("Let's start the game\n");
         while(userScore < 10 && opponentScore < 10) {
             //choosing a new dealer
@@ -96,11 +98,12 @@ public class EuchreGame {
 
 
             //section to print and check each user's hand
-            /*
+
             System.out.println("\nUser's hand:");
             for (Card currentCard : currentUser.getHand()) {
                 System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
             }
+            /*
             System.out.println("\nopp1's hand:");
             for (Card currentCard : opponent1.getHand()) {
                 System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
@@ -126,9 +129,9 @@ public class EuchreGame {
                 if (currentReciever.getName().equalsIgnoreCase("user")) {
                     System.out.println("'Pick up' or 'pass'");
                     pickSuitChoice = userScanner.nextLine();
-                    if (pickSuitChoice.equalsIgnoreCase("Pick")) {
+                    if (pickSuitChoice.equalsIgnoreCase("Pick") || pickSuitChoice.equalsIgnoreCase("Pick up")) {
                         //code for dealer to swap if computer or have player choose which card to drop
-                        System.out.println("pick up: " + currentReciever.getName());
+                        System.out.println("Pick up: " + currentReciever.getName() + "\n");
                         trumpChooser = currentReciever;
                         picked = true;
                         trumpSuit = topCard.getSuit();
@@ -146,7 +149,7 @@ public class EuchreGame {
                     String decision = currentReciever.pickOrPass(topCard, dealer);
                     if (decision.equalsIgnoreCase("Pick") || decision.equalsIgnoreCase("pick up")) {
                         //code for dealer to swap if computer or have player choose which card to drop
-                        System.out.println("pick up: " + currentReciever.getName());
+                        System.out.println("Pick up: " + currentReciever.getName() + "\n");
                         trumpChooser = currentReciever;
                         picked = true;
                         trumpSuit = topCard.getSuit();
@@ -171,7 +174,7 @@ public class EuchreGame {
 
                     if (currentReciever.getName().equalsIgnoreCase("user")) {
                         if (currentIndex == 3) {
-                            System.out.println("pick a trump suit");
+                            System.out.println("Pick a trump suit");
                             pickSuitChoice = userScanner.nextLine();
                             while (!(pickSuitChoice.equalsIgnoreCase("Clubs")  || pickSuitChoice.equalsIgnoreCase("Diamonds")  || pickSuitChoice.equalsIgnoreCase("Hearts")  || pickSuitChoice.equalsIgnoreCase("Spades"))) {
                                 System.out.println("Enter a valid card suit (Clubs, Diamonds, Hearts, or Spades), or pass");
@@ -179,6 +182,7 @@ public class EuchreGame {
                             }
                             trumpChooser = currentReciever;
                             trumpSuit = pickSuitChoice;
+                            System.out.println(currentReciever.getName() + " chose trump");
                             while (!currentReciever.getName().equalsIgnoreCase(firstDealer.getName())) {
                                 currentReciever = dealerQueue.remove(0);
                                 dealerQueue.add(currentReciever);
@@ -192,24 +196,28 @@ public class EuchreGame {
                                     System.out.println("Enter a valid card suit (Clubs, Diamonds, Hearts, or Spades), or pass");
                                     pickSuitChoice = userScanner.nextLine();
                                     if (pickSuitChoice.equalsIgnoreCase("pass")) {
+                                        System.out.println(currentReciever.getName() + " passes");
                                         break;
                                     }
                                 }
                                 if (!pickSuitChoice.equalsIgnoreCase("pass")) {
                                     trumpChooser = currentReciever;
                                     trumpSuit = pickSuitChoice;
+                                    System.out.println(currentReciever.getName() + " chose trump");
                                     while (!currentReciever.getName().equalsIgnoreCase(firstDealer.getName())) {
                                         currentReciever = dealerQueue.remove(0);
                                         dealerQueue.add(currentReciever);
                                     }
                                     break;
                                 }
+                            } else {
+                                System.out.println(currentReciever.getName() + " passes");
                             }
                         }
                     } else {
                         pickSuit = currentReciever.suitOrPass(dealer);
                         if (pickSuit != null && !pickSuit.equalsIgnoreCase("Pass")) {
-                            System.out.println("chose trump: " + currentReciever.getName());
+                            System.out.println(currentReciever.getName() + " chose trump");
                             trumpChooser = currentReciever;
                             trumpSuit = pickSuit;
                             while (!currentReciever.getName().equalsIgnoreCase(firstDealer.getName())) {
@@ -232,18 +240,19 @@ public class EuchreGame {
                 int turnIndex = 0;
                 Card[] cardsPlayed = new Card[4];
 
-                System.out.println("trump suit is "+ trumpSuit + "\n");
+                System.out.println("Trump suit is "+ trumpSuit + "\n");
                 //code to run through queue and have each player play a card
                 for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
                     currentPlayer = dealerQueue.remove(0);
                     if (!currentPlayer.getName().equalsIgnoreCase("user")) {
+                        sleep(1500);
                         cardsPlayed[playerIndex] = currentPlayer.chooseCardToPlay(cardsPlayed, trumpSuit, playerIndex);
                         System.out.println(currentPlayer.getName() + " played " + cardsPlayed[playerIndex].getFaceValue() + " of " + cardsPlayed[playerIndex].getSuit());
                     } else {
+                        sleep(1500);
                         System.out.println("User, enter card index to play");
 
                         currentPlayer.printCurrentHand();
-                        System.out.println("hand size: " + currentUser.getHand().size());
                         System.out.print("Card selection: ");
                         userChoice = userScanner.nextInt();
                         while (!(userChoice < currentUser.getHand().size() + 1 && userChoice > 0)) {
@@ -260,7 +269,7 @@ public class EuchreGame {
                     dealerQueue.add(currentPlayer);
                 }
                 int winnerIndex = getRoundWinner(trumpSuit, cardsPlayed);
-                System.out.println(winnerIndex);
+                //System.out.println(winnerIndex);
 
                 for (int playerIndex = 0; playerIndex <= winnerIndex; playerIndex++) {
                     currentPlayer = dealerQueue.remove(0);
@@ -268,14 +277,15 @@ public class EuchreGame {
                 }
                 if (currentPlayer.getName().equalsIgnoreCase("user") || currentPlayer.getName().equalsIgnoreCase("userPartner")) {
                     userRoundScore++;
-                    System.out.println("user point\n");
+                    System.out.println("\nUSER TEAM POINT\n");
                 }
                 if (currentPlayer.getName().equalsIgnoreCase("opponent1") || currentPlayer.getName().equalsIgnoreCase("opponent2")) {
                     oppRoundScore++;
-                    System.out.println("opp point\n");
+                    System.out.println("\nOPPONENT TEAM POINT\n");
                 }
                 currentPlayer = dealerQueue.remove(dealerQueue.size()-1);
                 dealerQueue.add(0, currentPlayer);
+                sleep(2000);
             }
 
             //rotates the queue so that the correct dealer is in place
@@ -287,17 +297,36 @@ public class EuchreGame {
             //tracks overall score for each player pair
             if (userRoundScore > oppRoundScore) {
                 if (trumpChooser.getName().equalsIgnoreCase("user") || trumpChooser.getName().equalsIgnoreCase("userPartner")) {
-                    userScore++;
+                    if (userRoundScore == 5) {
+                        userScore+=2;
+                    } else {
+                        userScore++;
+                    }
                 } else {
-                    userScore+=2;
+                    if (userRoundScore == 5) {
+                        userScore+=4;
+                    } else {
+                        userScore+=2;
+                    }
                 }
+                System.out.println("User team won that round!");
             } else {
                 if (trumpChooser.getName().equalsIgnoreCase("opponent1") || trumpChooser.getName().equalsIgnoreCase("opponent2")) {
-                    opponentScore++;
+                    if (oppRoundScore == 5) {
+                        opponentScore+=2;
+                    } else {
+                        opponentScore++;
+                    }
                 } else {
-                    opponentScore+=2;
+                    if (oppRoundScore == 5) {
+                        opponentScore+=4;
+                    } else {
+                        opponentScore+=2;
+                    }
                 }
+                System.out.println("Opponent team won that round!");
             }
+            System.out.println("Current Score: \nUser Team: " + userScore + "\nOpponent Team: " + opponentScore);
 
         }
         if (userScore >= 10) {

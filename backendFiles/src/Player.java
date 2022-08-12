@@ -110,7 +110,7 @@ public class Player {
             }
         }
 
-        if (decisionScore >= 14 && suits[trumpIndex] >= 3) {
+        if (decisionScore >= 12 && suits[trumpIndex] >= 3) {
             return "Pick";
         } else {
             return "Pass";
