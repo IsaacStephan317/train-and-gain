@@ -7,7 +7,7 @@ Whether you're learning the game for the first time, or trying out new strategie
 ## Accessing the train-and-gain application
 Users will need to clone this git repository to play the game, with steps for cloning, included below:
 1. Open a terminal and enter the command 'git clone https://github.com/IsaacStephan317/train-and-gain'
-2. Navigate to the train and gain directory and open the folder denoted by the path '\...\train-and-gain\backendFiles\src'
+2. Navigate to the train and gain directory and open the folder denoted by the path '\train-and-gain\backendFiles\src'
 3. Once in the src folder run the command 'javac EuchreGame.java'
 4. Now run the command 'java EuchreGame' and the game should begin in your terminal
 
