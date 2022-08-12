@@ -37,6 +37,15 @@ public class Player {
         return partner;
     }
 
+    public void printCurrentHand() {
+        int index = 1;
+        System.out.println("\nCurrent hand:");
+        for (Card currentCard: hand) {
+            System.out.println(index + ": " + currentCard.getFaceValue() + " of " + currentCard.getSuit());
+            index++;
+        }
+    }
+
     public void addToHand(Card requestedCard) {
         hand.add(requestedCard);
     }
