@@ -65,7 +65,7 @@ public class Player {
         Boolean dealingTeam;
         int decisionScore = 0;
 
-        if (!dealer.getName().equals(partner) || !dealer.getName().equals(name)) {
+        if (!dealer.getName().equalsIgnoreCase(partner) || !dealer.getName().equalsIgnoreCase(name)) {
             dealingTeam = false;
         } else {
             dealingTeam = true;
@@ -76,27 +76,27 @@ public class Player {
         int[] avgCardValue = new int[4];
 
         for (Card currCard: hand) {
-            if (currCard.getSuit().equals("Clubs")) {
+            if (currCard.getSuit().equalsIgnoreCase("Clubs")) {
                 adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 0);
-            } else if (currCard.getSuit().equals("Diamonds")) {
+            } else if (currCard.getSuit().equalsIgnoreCase("Diamonds")) {
                 adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 1);
-            } else if (currCard.getSuit().equals("Hearts")) {
+            } else if (currCard.getSuit().equalsIgnoreCase("Hearts")) {
                 adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 2);
-            } else if (currCard.getSuit().equals("Spades")) {
+            } else if (currCard.getSuit().equalsIgnoreCase("Spades")) {
                 adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 3);
             }
         }
         int trumpIndex = 0;
-        if (topCard.getSuit().equals("Clubs")) {
+        if (topCard.getSuit().equalsIgnoreCase("Clubs")) {
             decisionScore = avgCardValue[0] + 1;
             trumpIndex = 0;
-        } else if (topCard.getSuit().equals("Diamonds")) {
+        } else if (topCard.getSuit().equalsIgnoreCase("Diamonds")) {
             decisionScore = avgCardValue[1] + 1;
             trumpIndex = 1;
-        } else if (topCard.getSuit().equals("Hearts")) {
+        } else if (topCard.getSuit().equalsIgnoreCase("Hearts")) {
             decisionScore = avgCardValue[2] + 1;
             trumpIndex = 2;
-        } else if (topCard.getSuit().equals("Spades")) {
+        } else if (topCard.getSuit().equalsIgnoreCase("Spades")) {
             decisionScore = avgCardValue[3] + 1;
             trumpIndex = 3;
         }
@@ -110,7 +110,7 @@ public class Player {
             }
         }
 
-        if (decisionScore >= 12 && suits[trumpIndex] >= 3) {
+        if (decisionScore >= 14 && suits[trumpIndex] >= 3) {
             return "Pick";
         } else {
             return "Pass";
@@ -138,7 +138,7 @@ public class Player {
         int count = 0;
         int currentWorst = 0;
         for (Card currCard: hand) {
-            if (currCard.getSuit().equals(trumpSuit)) {
+            if (currCard.getSuit().equalsIgnoreCase(trumpSuit)) {
                 handScores[count] += 15 + currCard.getCardValue();
             } else {
                 handScores[count] += currCard.getCardValue();
@@ -161,13 +161,13 @@ public class Player {
         int[] totalCardValue = new int[4];
         int[] avgCardValue = new int[4];
         for (Card currCard: hand) {
-            if (currCard.getSuit().equals("Clubs")) {
+            if (currCard.getSuit().equalsIgnoreCase("Clubs")) {
                 adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 0);
-            } else if (currCard.getSuit().equals("Diamonds")) {
+            } else if (currCard.getSuit().equalsIgnoreCase("Diamonds")) {
                 adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 1);
-            } else if (currCard.getSuit().equals("Hearts")) {
+            } else if (currCard.getSuit().equalsIgnoreCase("Hearts")) {
                 adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 2);
-            } else if (currCard.getSuit().equals("Spades")) {
+            } else if (currCard.getSuit().equalsIgnoreCase("Spades")) {
                 adjustDecisionScore(suits, totalCardValue, avgCardValue, currCard, 3);
             }
         }
@@ -183,7 +183,7 @@ public class Player {
         }
 
         wouldBeSuit = getSuit(trumpIndex);
-        if (dealer.getName().equals(name)) {
+        if (dealer.getName().equalsIgnoreCase(name)) {
             return wouldBeSuit;
         } else {
             if (decisionScore >= 12 && suits[trumpIndex] >= 3) {
@@ -207,7 +207,7 @@ public class Player {
         //need to add in logic to follow suit and include other jack as a trump
         if (numbPlayed == 0) {
             for (Card currCard: hand) {
-                if (currCard.getSuit().equals(trumpSuit)) {
+                if (currCard.getSuit().equalsIgnoreCase(trumpSuit)) {
                     handScores[count] += currCard.getCardValue();
                 } else {
                     handScores[count] += 4 + currCard.getCardValue();
@@ -228,7 +228,7 @@ public class Player {
                 if (playedCard == null) {
                     break;
                 }
-                if (playedCard.getSuit().equals(trumpSuit)) {
+                if (playedCard.getSuit().equalsIgnoreCase(trumpSuit)) {
                     playedCardsValue[count] += 15 + playedCard.getCardValue();
                 } else {
                     playedCardsValue[count] += playedCard.getCardValue();
@@ -240,11 +240,11 @@ public class Player {
 
             count = 0;
             for (Card currCard: hand) { //still need to add in logic for the right and the left (jacks that are trump)
-                if (currCard.getSuit().equals(leadSuit)) {
+                if (currCard.getSuit().equalsIgnoreCase(leadSuit)) {
                     handScores[count] += 100;
                     leadSuitFound = true;
                 }
-                if (currCard.getSuit().equals(trumpSuit)) {
+                if (currCard.getSuit().equalsIgnoreCase(trumpSuit)) {
                     handScores[count] += 15 + currCard.getCardValue();
                 } else {
                     handScores[count] += currCard.getCardValue();

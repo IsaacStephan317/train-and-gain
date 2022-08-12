@@ -7,13 +7,13 @@ public class EuchreGame {
     public static Player dealer;
 
     private static boolean getJackPair(String trumpSuit, Card possibleJack) {
-        if (trumpSuit.equals("Clubs") && possibleJack.getSuit().equals("Spades")) {
+        if (trumpSuit.equalsIgnoreCase("Clubs") && possibleJack.getSuit().equalsIgnoreCase("Spades")) {
             return true;
-        } else if (trumpSuit.equals("Spades") && possibleJack.getSuit().equals("Clubs")) {
+        } else if (trumpSuit.equalsIgnoreCase("Spades") && possibleJack.getSuit().equalsIgnoreCase("Clubs")) {
             return true;
-        } else if (trumpSuit.equals("Hearts") && possibleJack.getSuit().equals("Diamonds")) {
+        } else if (trumpSuit.equalsIgnoreCase("Hearts") && possibleJack.getSuit().equalsIgnoreCase("Diamonds")) {
             return true;
-        } else if (trumpSuit.equals("Diamonds") && possibleJack.getSuit().equals("Hearts")) {
+        } else if (trumpSuit.equalsIgnoreCase("Diamonds") && possibleJack.getSuit().equalsIgnoreCase("Hearts")) {
             return true;
         } else {
             return false;
@@ -28,17 +28,17 @@ public class EuchreGame {
         for (int cardIndex = 0; cardIndex < 4; cardIndex++) {
             //System.out.println(playedCards[cardIndex].getFaceValue() + "of" + playedCards[cardIndex].getSuit());
             int currentScore = 0;
-            if (playedCards[cardIndex].getSuit().equals(leadSuit)) {
+            if (playedCards[cardIndex].getSuit().equalsIgnoreCase(leadSuit)) {
                 currentScore += 16;
             }
-            if (playedCards[cardIndex].getSuit().equals(trumpSuit)) {
+            if (playedCards[cardIndex].getSuit().equalsIgnoreCase(trumpSuit)) {
                 currentScore += 32;
-                if (playedCards[cardIndex].getFaceValue().equals("Jack")) {
+                if (playedCards[cardIndex].getFaceValue().equalsIgnoreCase("Jack")) {
                     currentScore += 16;
                 } else {
                     currentScore += playedCards[cardIndex].getCardValue();
                 }
-            } else if (playedCards[cardIndex].getFaceValue().equals("Jack") && getJackPair(trumpSuit, playedCards[cardIndex])) { //check to see if card is a jack of the same color
+            } else if (playedCards[cardIndex].getFaceValue().equalsIgnoreCase("Jack") && getJackPair(trumpSuit, playedCards[cardIndex])) { //check to see if card is a jack of the same color
                 currentScore += 47; //technically a trump (+32) and a jack pair (+15)
             } else {
                 currentScore += playedCards[cardIndex].getCardValue();
@@ -117,25 +117,49 @@ public class EuchreGame {
             */
 
             System.out.println("\nTop card is: " + kitty[0].getFaceValue() + " of " + kitty[0].getSuit());
-
+            String pickSuitChoice;
             topCard = kitty[0];
             for (int currentIndex = 0; currentIndex < 4; currentIndex++) {
                 Player currentReciever = dealerQueue.remove(0);
-                String decision = currentReciever.pickOrPass(topCard, dealer);
                 dealerQueue.add(currentReciever);
-                if (decision.equals("Pick")) {
-                    //code for dealer to swap if computer or have player choose which card to drop
-                    System.out.println("pick up: " + currentReciever.getName());
-                    trumpChooser = currentReciever;
-                    picked = true;
-                    trumpSuit = topCard.getSuit();
-                    dealer.pickUpCard(topCard, trumpSuit);
 
-                    while (!currentReciever.getName().equals(firstDealer.getName())) {
-                        currentReciever = dealerQueue.remove(0);
-                        dealerQueue.add(currentReciever);
+                if (currentReciever.getName().equalsIgnoreCase("user")) {
+                    System.out.println("'Pick up' or 'pass'");
+                    pickSuitChoice = userScanner.nextLine();
+                    if (pickSuitChoice.equalsIgnoreCase("Pick")) {
+                        //code for dealer to swap if computer or have player choose which card to drop
+                        System.out.println("pick up: " + currentReciever.getName());
+                        trumpChooser = currentReciever;
+                        picked = true;
+                        trumpSuit = topCard.getSuit();
+                        dealer.pickUpCard(topCard, trumpSuit);
+
+                        while (!currentReciever.getName().equalsIgnoreCase(firstDealer.getName())) {
+                            currentReciever = dealerQueue.remove(0);
+                            dealerQueue.add(currentReciever);
+                        }
+                        break;
+                    } else {
+                        System.out.println("User passes");
                     }
-                    break;
+                } else {
+                    String decision = currentReciever.pickOrPass(topCard, dealer);
+                    if (decision.equalsIgnoreCase("Pick") || decision.equalsIgnoreCase("pick up")) {
+                        //code for dealer to swap if computer or have player choose which card to drop
+                        System.out.println("pick up: " + currentReciever.getName());
+                        trumpChooser = currentReciever;
+                        picked = true;
+                        trumpSuit = topCard.getSuit();
+                        dealer.pickUpCard(topCard, trumpSuit);
+
+                        while (!currentReciever.getName().equalsIgnoreCase(firstDealer.getName())) {
+                            currentReciever = dealerQueue.remove(0);
+                            dealerQueue.add(currentReciever);
+                        }
+                        break;
+                    } else {
+                        System.out.println(currentReciever.getName() + " passes");
+                    }
                 }
             }
 
@@ -143,17 +167,59 @@ public class EuchreGame {
                 String pickSuit = null;
                 for (int currentIndex = 0; currentIndex < 4; currentIndex++) {
                     Player currentReciever = dealerQueue.remove(0);
-                    pickSuit = currentReciever.suitOrPass(dealer);
                     dealerQueue.add(currentReciever);
-                    if (pickSuit != null && !pickSuit.equals("Pass")) {
-                        System.out.println("chose trump: " + currentReciever.getName());
-                        trumpChooser = currentReciever;
-                        trumpSuit = pickSuit;
-                        while (!currentReciever.getName().equals(firstDealer.getName())) {
-                            currentReciever = dealerQueue.remove(0);
-                            dealerQueue.add(currentReciever);
+
+                    if (currentReciever.getName().equalsIgnoreCase("user")) {
+                        if (currentIndex == 3) {
+                            System.out.println("pick a trump suit");
+                            pickSuitChoice = userScanner.nextLine();
+                            while (!(pickSuitChoice.equalsIgnoreCase("Clubs")  || pickSuitChoice.equalsIgnoreCase("Diamonds")  || pickSuitChoice.equalsIgnoreCase("Hearts")  || pickSuitChoice.equalsIgnoreCase("Spades"))) {
+                                System.out.println("Enter a valid card suit (Clubs, Diamonds, Hearts, or Spades), or pass");
+                                pickSuitChoice = userScanner.nextLine();
+                            }
+                            trumpChooser = currentReciever;
+                            trumpSuit = pickSuitChoice;
+                            while (!currentReciever.getName().equalsIgnoreCase(firstDealer.getName())) {
+                                currentReciever = dealerQueue.remove(0);
+                                dealerQueue.add(currentReciever);
+                            }
+                            break;
+                        } else {
+                            System.out.println("'Choose trump' or 'pass'");
+                            pickSuitChoice = userScanner.nextLine();
+                            if (!pickSuitChoice.equalsIgnoreCase("pass")) {
+                                while (!(pickSuitChoice.equalsIgnoreCase("Clubs")  || pickSuitChoice.equalsIgnoreCase("Diamonds")  || pickSuitChoice.equalsIgnoreCase("Hearts")  || pickSuitChoice.equalsIgnoreCase("Spades"))) {
+                                    System.out.println("Enter a valid card suit (Clubs, Diamonds, Hearts, or Spades), or pass");
+                                    pickSuitChoice = userScanner.nextLine();
+                                    if (pickSuitChoice.equalsIgnoreCase("pass")) {
+                                        break;
+                                    }
+                                }
+                                if (!pickSuitChoice.equalsIgnoreCase("pass")) {
+                                    trumpChooser = currentReciever;
+                                    trumpSuit = pickSuitChoice;
+                                    while (!currentReciever.getName().equalsIgnoreCase(firstDealer.getName())) {
+                                        currentReciever = dealerQueue.remove(0);
+                                        dealerQueue.add(currentReciever);
+                                    }
+                                    break;
+                                }
+                            }
                         }
-                        break;
+                    } else {
+                        pickSuit = currentReciever.suitOrPass(dealer);
+                        if (pickSuit != null && !pickSuit.equalsIgnoreCase("Pass")) {
+                            System.out.println("chose trump: " + currentReciever.getName());
+                            trumpChooser = currentReciever;
+                            trumpSuit = pickSuit;
+                            while (!currentReciever.getName().equalsIgnoreCase(firstDealer.getName())) {
+                                currentReciever = dealerQueue.remove(0);
+                                dealerQueue.add(currentReciever);
+                            }
+                            break;
+                        } else {
+                            System.out.println(currentReciever.getName() + " passes");
+                        }
                     }
                 }
             }
@@ -170,7 +236,7 @@ public class EuchreGame {
                 //code to run through queue and have each player play a card
                 for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
                     currentPlayer = dealerQueue.remove(0);
-                    if (!currentPlayer.getName().equals("user")) {
+                    if (!currentPlayer.getName().equalsIgnoreCase("user")) {
                         cardsPlayed[playerIndex] = currentPlayer.chooseCardToPlay(cardsPlayed, trumpSuit, playerIndex);
                         System.out.println(currentPlayer.getName() + " played " + cardsPlayed[playerIndex].getFaceValue() + " of " + cardsPlayed[playerIndex].getSuit());
                     } else {
@@ -200,11 +266,11 @@ public class EuchreGame {
                     currentPlayer = dealerQueue.remove(0);
                     dealerQueue.add(currentPlayer);
                 }
-                if (currentPlayer.getName().equals("user") || currentPlayer.getName().equals("userPartner")) {
+                if (currentPlayer.getName().equalsIgnoreCase("user") || currentPlayer.getName().equalsIgnoreCase("userPartner")) {
                     userRoundScore++;
                     System.out.println("user point\n");
                 }
-                if (currentPlayer.getName().equals("opponent1") || currentPlayer.getName().equals("opponent2")) {
+                if (currentPlayer.getName().equalsIgnoreCase("opponent1") || currentPlayer.getName().equalsIgnoreCase("opponent2")) {
                     oppRoundScore++;
                     System.out.println("opp point\n");
                 }
@@ -213,21 +279,20 @@ public class EuchreGame {
             }
 
             //rotates the queue so that the correct dealer is in place
-            while (!currentPlayer.getName().equals(firstDealer.getName())) {
+            while (!currentPlayer.getName().equalsIgnoreCase(firstDealer.getName())) {
                 currentPlayer = dealerQueue.remove(0);
                 dealerQueue.add(currentPlayer);
             }
 
-            //still need to let user make interactive choices
             //tracks overall score for each player pair
             if (userRoundScore > oppRoundScore) {
-                if (trumpChooser.getName().equals("user") || trumpChooser.getName().equals("userPartner")) {
+                if (trumpChooser.getName().equalsIgnoreCase("user") || trumpChooser.getName().equalsIgnoreCase("userPartner")) {
                     userScore++;
                 } else {
                     userScore+=2;
                 }
             } else {
-                if (trumpChooser.getName().equals("opponent1") || trumpChooser.getName().equals("opponent2")) {
+                if (trumpChooser.getName().equalsIgnoreCase("opponent1") || trumpChooser.getName().equalsIgnoreCase("opponent2")) {
                     opponentScore++;
                 } else {
                     opponentScore+=2;
