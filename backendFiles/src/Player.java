@@ -77,7 +77,7 @@ public class Player {
     public String pickOrPass(Card topCard, Player dealer) {
         String topSuit = topCard.getSuit();
         Boolean dealingTeam;
-        int decisionScore = 0;
+        double decisionScore = 0;
 
         if (!dealer.getName().equalsIgnoreCase(partner) || !dealer.getName().equalsIgnoreCase(name)) {
             dealingTeam = false;
@@ -124,7 +124,7 @@ public class Player {
             }
         }
 
-        if (decisionScore >= 14 && suits[trumpIndex] >= 3) {
+        if (decisionScore >= 12.5 && suits[trumpIndex] >= 3) {
             return "Pick";
         } else {
             return "Pass";
