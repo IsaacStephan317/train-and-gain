@@ -143,7 +143,27 @@ public class EuchreGame {
                         }
                         break;
                     } else {
-                        System.out.println("User passes");
+                        while (!(pickSuitChoice.equalsIgnoreCase("Pass") || pickSuitChoice.equalsIgnoreCase("Pick") || pickSuitChoice.equalsIgnoreCase("Pick up"))) {
+                            System.out.println("Enter a valid action (Pass, Pick, Pick up)");
+                            pickSuitChoice = userScanner.nextLine();
+                            if (pickSuitChoice.equalsIgnoreCase("pass")) {
+                                System.out.println(currentReciever.getName() + " passes");
+                                break;
+                            } else if(pickSuitChoice.equalsIgnoreCase("Pick") || pickSuitChoice.equalsIgnoreCase("Pick up")) {
+                                System.out.println("Pick up: " + currentReciever.getName() + "\n");
+                                trumpChooser = currentReciever;
+                                picked = true;
+                                trumpSuit = topCard.getSuit();
+                                dealer.pickUpCard(topCard, trumpSuit);
+
+                                while (!currentReciever.getName().equalsIgnoreCase(firstDealer.getName())) {
+                                    currentReciever = dealerQueue.remove(0);
+                                    dealerQueue.add(currentReciever);
+                                }
+                                break;
+                            }
+                        }
+                        break;
                     }
                 } else {
                     String decision = currentReciever.pickOrPass(topCard, dealer);

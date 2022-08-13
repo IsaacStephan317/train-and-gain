@@ -50,6 +50,20 @@ public class Player {
         hand.add(requestedCard);
     }
 
+    private static boolean getJackPair(String trumpSuit, Card possibleJack) {
+        if (trumpSuit.equalsIgnoreCase("Clubs") && possibleJack.getSuit().equalsIgnoreCase("Spades")) {
+            return true;
+        } else if (trumpSuit.equalsIgnoreCase("Spades") && possibleJack.getSuit().equalsIgnoreCase("Clubs")) {
+            return true;
+        } else if (trumpSuit.equalsIgnoreCase("Hearts") && possibleJack.getSuit().equalsIgnoreCase("Diamonds")) {
+            return true;
+        } else if (trumpSuit.equalsIgnoreCase("Diamonds") && possibleJack.getSuit().equalsIgnoreCase("Hearts")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     private void adjustDecisionScore(int[] suits, int[] totalCardValue, int[] avgCardValue, Card currCard, int index) {
         suits[index]++;
         if (currCard.getCardValue() == 11) {
@@ -110,7 +124,7 @@ public class Player {
             }
         }
 
-        if (decisionScore >= 12 && suits[trumpIndex] >= 3) {
+        if (decisionScore >= 14 && suits[trumpIndex] >= 3) {
             return "Pick";
         } else {
             return "Pass";
@@ -220,8 +234,16 @@ public class Player {
             playedCardIndex = bestCardIndex;
         } else {
             int[] playedCardsValue = new int[4];
-            int leadCard = 0;
-            leadSuit = cardsPlayed[0].getSuit();
+            int topCard = 0;
+            Card leadCard = cardsPlayed[0];
+
+            if (leadCard.getFaceValue().equalsIgnoreCase("Jack")) {
+                if (getJackPair(trumpSuit, leadCard)) {
+                    leadSuit = trumpSuit;
+                }
+            } else {
+                leadSuit = cardsPlayed[0].getSuit();
+            }
             boolean leadSuitFound = false;
 
             for (Card playedCard: cardsPlayed) {
@@ -233,9 +255,10 @@ public class Player {
                 } else {
                     playedCardsValue[count] += playedCard.getCardValue();
                 }
-                if (playedCardsValue[count] > playedCardsValue[leadCard]) {
-                    leadCard = count;
+                if (playedCardsValue[count] > playedCardsValue[topCard]) {
+                    topCard = count;
                 }
+                count++;
             }
 
             count = 0;
@@ -255,8 +278,9 @@ public class Player {
                 } else if(handScores[count] < handScores[bestCardIndex]) {
                     worstCardIndex = count;
                 }
+                count++;
             }
-            if (leadSuitFound == true || handScores[bestCardIndex] > playedCardsValue[leadCard]) {
+            if (leadSuitFound == true || handScores[bestCardIndex] > playedCardsValue[topCard]) {
                 playedCardIndex = bestCardIndex;
             } else {
                 playedCardIndex = worstCardIndex;
