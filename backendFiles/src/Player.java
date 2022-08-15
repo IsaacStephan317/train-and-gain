@@ -226,14 +226,23 @@ public class Player {
 
     }
 
+    //TODO: have computer play lower card if partner is winning
     public Card chooseCardToPlay(Card[] cardsPlayed, String trumpSuit, int numbPlayed) {
         int playedCardIndex = 0;
         int bestCardIndex = 0;
         int worstCardIndex = 0;
         int followSuitIndex = 0;
         int count = 0;
+        int partnerIndex = -1;
+        int partnerScore = 0;
         int[] handScores = new int[5];
         String leadSuit = "empty";
+
+        if (numbPlayed == 2) {
+            partnerIndex = 0;
+        } else if (numbPlayed == 3) {
+            partnerIndex = 1;
+        }
 
         //need to add in logic to follow suit and include other jack as a trump
         if (numbPlayed == 0) {
@@ -279,7 +288,7 @@ public class Player {
             }
 
             count = 0;
-            for (Card currCard: hand) { //still need to add in logic for the right and the left (jacks that are trump)
+            for (Card currCard: hand) {
                 if (currCard.getSuit().equalsIgnoreCase(leadSuit)) {
                     handScores[count] += 100;
                     leadSuitFound = true;
@@ -297,7 +306,11 @@ public class Player {
                 }
                 count++;
             }
-            if (leadSuitFound == true || handScores[bestCardIndex] > playedCardsValue[topCard]) {
+            if (leadSuitFound == true) {
+                playedCardIndex = bestCardIndex;
+            } else if (partnerIndex != 0 && topCard == partnerIndex) {
+                playedCardIndex = worstCardIndex;
+            } else if (handScores[bestCardIndex] > playedCardsValue[topCard]) {
                 playedCardIndex = bestCardIndex;
             } else {
                 playedCardIndex = worstCardIndex;

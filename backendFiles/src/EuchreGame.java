@@ -256,7 +256,7 @@ public class EuchreGame {
             Player currentPlayer = null;
             int userChoice = 0;
             //start of actually playing the game, 5 rounds for each deal
-            //TODO: Still need to add code to prevent a user from not following suit, computers already do, also have computer play lower card if partner is winning
+            //TODO: have computer play lower card if partner is winning
             for (int roundNumber = 0; roundNumber < 5; roundNumber++) {
                 String suitLed = "empty";
                 int turnIndex = 0;
