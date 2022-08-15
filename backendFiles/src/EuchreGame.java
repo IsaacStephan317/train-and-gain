@@ -22,10 +22,25 @@ public class EuchreGame {
         }
     }
 
+    private static boolean followSuitCheck (String leadSuit, Card cardPlayed, String trumpSuit) {
+        if (getCardSuit(cardPlayed, trumpSuit).equalsIgnoreCase(leadSuit)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static String getCardSuit(Card firstCard, String trumpSuit) {
+        if (firstCard.getFaceValue().equalsIgnoreCase("Jack") && getJackPair(trumpSuit, firstCard)) {
+            return trumpSuit;
+        } else {
+            return firstCard.getSuit();
+        }
+    }
+
     private static int getRoundWinner (String trumpSuit, Card[] playedCards) {
         int maxScore = 0;
         int maxIndex = 0;
-        String leadSuit = playedCards[0].getSuit();
+        String leadSuit = getCardSuit(playedCards[0], trumpSuit);
 
         for (int cardIndex = 0; cardIndex < 4; cardIndex++) {
             //System.out.println(playedCards[cardIndex].getFaceValue() + "of" + playedCards[cardIndex].getSuit());
@@ -103,21 +118,6 @@ public class EuchreGame {
             for (Card currentCard : currentUser.getHand()) {
                 System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
             }
-            /*
-            System.out.println("\nopp1's hand:");
-            for (Card currentCard : opponent1.getHand()) {
-                System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
-            }
-
-            System.out.println("\npartner's hand:");
-            for (Card currentCard : userPartner.getHand()) {
-                System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
-            }
-            System.out.println("\nopp2's hand:");
-            for (Card currentCard : opponent2.getHand()) {
-                System.out.println(currentCard.getFaceValue() + " " + currentCard.getSuit());
-            }
-            */
 
             System.out.println("\nTop card is: " + kitty[0].getFaceValue() + " of " + kitty[0].getSuit());
             String pickSuitChoice;
@@ -192,6 +192,7 @@ public class EuchreGame {
                     Player currentReciever = dealerQueue.remove(0);
                     dealerQueue.add(currentReciever);
 
+                    //code to allow user to select a trump suit
                     if (currentReciever.getName().equalsIgnoreCase("user")) {
                         if (currentIndex == 3) {
                             System.out.println("Pick a trump suit");
@@ -234,7 +235,7 @@ public class EuchreGame {
                                 System.out.println(currentReciever.getName() + " passes");
                             }
                         }
-                    } else {
+                    } else { //code to have the computer possibly pick a trump suit
                         pickSuit = currentReciever.suitOrPass(dealer);
                         if (pickSuit != null && !pickSuit.equalsIgnoreCase("Pass")) {
                             System.out.println(currentReciever.getName() + " chose trump");
@@ -253,39 +254,62 @@ public class EuchreGame {
             }
 
             Player currentPlayer = null;
-            int userChoice;
+            int userChoice = 0;
             //start of actually playing the game, 5 rounds for each deal
+            //TODO: Still need to add code to prevent a user from not following suit, computers already do, also have computer play lower card if partner is winning
             for (int roundNumber = 0; roundNumber < 5; roundNumber++) {
                 String suitLed = "empty";
                 int turnIndex = 0;
                 Card[] cardsPlayed = new Card[4];
+                boolean hasLeadSuit;
 
                 System.out.println("Trump suit is "+ trumpSuit + "\n");
                 //code to run through queue and have each player play a card
                 for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
+                    if (playerIndex == 1) {
+                        suitLed = getCardSuit(cardsPlayed[0], trumpSuit);
+                    }
                     currentPlayer = dealerQueue.remove(0);
-                    if (!currentPlayer.getName().equalsIgnoreCase("user")) {
+                    if (!currentPlayer.getName().equalsIgnoreCase("user")) { //have computer choose a card to play
                         sleep(1500);
                         cardsPlayed[playerIndex] = currentPlayer.chooseCardToPlay(cardsPlayed, trumpSuit, playerIndex);
                         System.out.println(currentPlayer.getName() + " played " + cardsPlayed[playerIndex].getFaceValue() + " of " + cardsPlayed[playerIndex].getSuit());
                     } else {
                         sleep(1500);
-                        System.out.println("User, enter card index to play");
-
-                        currentPlayer.printCurrentHand();
-                        System.out.print("Card selection: ");
-                        userChoice = userScanner.nextInt();
-                        while (!(userChoice < currentUser.getHand().size() + 1 && userChoice > 0)) {
-                            System.out.println("Invalid index, please select a card index from the list printed above");
-                            System.out.println("hand size: " + currentUser.getHand().size());
+                        hasLeadSuit = false;
+                        boolean playedValidSuit = false;
+                        while(playedValidSuit == false) {
                             System.out.println("User, enter card index to play");
+                            if (playerIndex != 0) {
+                                hasLeadSuit = currentPlayer.hasLeadSuit(suitLed, trumpSuit);
+                            }
+
                             currentPlayer.printCurrentHand();
                             System.out.print("Card selection: ");
                             userChoice = userScanner.nextInt();
+                            while (!(userChoice < currentUser.getHand().size() + 1 && userChoice > 0)) {
+                                System.out.println("Invalid index, please select a card index from the list printed above");
+                                System.out.println("hand size: " + currentUser.getHand().size());
+                                System.out.println("User, enter card index to play");
+                                currentPlayer.printCurrentHand();
+                                System.out.print("Card selection: ");
+                                userChoice = userScanner.nextInt();
+                            }
+                            if (hasLeadSuit == true) {
+                                playedValidSuit = followSuitCheck(suitLed, currentPlayer.peekAtCardIndex(userChoice - 1), trumpSuit);
+                            } else {
+                                playedValidSuit = true;
+                            }
+                            if (playedValidSuit) {
+                                break;
+                            } else {
+                                System.out.println("Invalid card choice, remember you must play a card that has the same\nsuit as the first card played if you have it");
+                            }
                         }
                         cardsPlayed[playerIndex] = currentPlayer.removeFromHand(userChoice-1);
                         System.out.println("\n" + currentPlayer.getName() + " played " + cardsPlayed[playerIndex].getFaceValue() + " of " + cardsPlayed[playerIndex].getSuit());
-                    }
+
+                        }
                     dealerQueue.add(currentPlayer);
                 }
                 int winnerIndex = getRoundWinner(trumpSuit, cardsPlayed);

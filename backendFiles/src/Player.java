@@ -24,6 +24,10 @@ public class Player {
         return hand;
     }
 
+    public Card peekAtCardIndex(int index) {
+        return hand.get(index);
+    }
+
     public Card removeFromHand(int requestedCard) {
 
         return hand.remove(requestedCard);
@@ -46,11 +50,24 @@ public class Player {
         }
     }
 
+    public boolean hasLeadSuit(String leadSuit, String trumpSuit) {
+        int index = 0;
+        boolean leadSuitFound = false;
+        for (Card currentCard: hand) {
+            if (currentCard.getSuit().equalsIgnoreCase(leadSuit)) {
+                leadSuitFound = true;
+            } else if (leadSuit.equalsIgnoreCase(trumpSuit) && getJackPair(trumpSuit, currentCard)) {
+                leadSuitFound = true;
+            }
+        }
+        return leadSuitFound;
+    }
+
     public void addToHand(Card requestedCard) {
         hand.add(requestedCard);
     }
 
-    private static boolean getJackPair(String trumpSuit, Card possibleJack) {
+    private boolean getJackPair(String trumpSuit, Card possibleJack) {
         if (trumpSuit.equalsIgnoreCase("Clubs") && possibleJack.getSuit().equalsIgnoreCase("Spades")) {
             return true;
         } else if (trumpSuit.equalsIgnoreCase("Spades") && possibleJack.getSuit().equalsIgnoreCase("Clubs")) {
