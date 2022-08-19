@@ -50,6 +50,7 @@ public class Player {
         }
     }
 
+    //check to see if the lead suit exists in a player's hand
     public boolean hasLeadSuit(String leadSuit, String trumpSuit) {
         int index = 0;
         boolean leadSuitFound = false;
@@ -63,10 +64,12 @@ public class Player {
         return leadSuitFound;
     }
 
+    //adds the inputted card into a player's hand
     public void addToHand(Card requestedCard) {
         hand.add(requestedCard);
     }
 
+    //checks to see if a jack is a trump or not
     private boolean getJackPair(String trumpSuit, Card possibleJack) {
         if (trumpSuit.equalsIgnoreCase("Clubs") && possibleJack.getSuit().equalsIgnoreCase("Spades")) {
             return true;
@@ -81,6 +84,7 @@ public class Player {
         }
     }
 
+    //adjusts card values for jacks of the same trump color
     private void adjustDecisionScore(int[] suits, int[] totalCardValue, int[] avgCardValue, Card currCard, int index) {
         suits[index]++;
         if (currCard.getCardValue() == 11) {
@@ -91,6 +95,7 @@ public class Player {
         avgCardValue[index] = totalCardValue[index]/suits[index];
     }
 
+    //code to have a computer decide whether to have a card picked up or not
     public String pickOrPass(Card topCard, Player dealer) {
         String topSuit = topCard.getSuit();
         Boolean dealingTeam;
@@ -148,6 +153,7 @@ public class Player {
         }
     }
 
+    //gets the suit of a given card, specifically converting jacks if needed
     private String getSuit(int place) {
         //0 is clubs, 1 diamonds, 2 hearts, 3 spades
         if (place == 0) {
@@ -163,7 +169,7 @@ public class Player {
         }
     }
 
-    //still need to factor in the jack that doesn't have the same suit as trump but counts as trump
+    //method to have the user pick up the card if they are a dealer
     public void pickUpCard (Card topCard, String trumpSuit) {
         int[] handScores = new int[5];
         int count = 0;
@@ -183,6 +189,7 @@ public class Player {
         hand.add(topCard);
     }
 
+    //method to have a computer choose whether to choose trump or not
     public String suitOrPass(Player dealer) {
         int decisionScore = 0;
         String wouldBeSuit;
@@ -226,7 +233,7 @@ public class Player {
 
     }
 
-    //TODO: have computer play lower card if partner is winning
+    //have computer choose to which card to play
     public Card chooseCardToPlay(Card[] cardsPlayed, String trumpSuit, int numbPlayed) {
         int playedCardIndex = 0;
         int bestCardIndex = 0;
@@ -244,7 +251,6 @@ public class Player {
             partnerIndex = 1;
         }
 
-        //need to add in logic to follow suit and include other jack as a trump
         if (numbPlayed == 0) {
             for (Card currCard: hand) {
                 if (currCard.getSuit().equalsIgnoreCase(trumpSuit)) {
