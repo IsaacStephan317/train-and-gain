@@ -76,7 +76,7 @@ public class EuchreGame {
     }
 
     /**
-     * gets the card suit if a Jack is the left bower and a trump card
+     * Gets the winner of a given trick after 4 cards are played
      *
      * @param  trumpSuit  String representing the current trump suit
      * @param  playedCards  Card array representing all the cards played in a given trick
